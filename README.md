@@ -1,16 +1,38 @@
-# Pawket
+# Pawket 🐾
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A cute, minimalist, and cheerful pet tracking dashboard designed for loving pawrents! 🐱🐹
 
-Currently, two official plugins are available:
+Pawket adalah proyek frontend web app sederhana berbasis React yang membantu para **Pawrents** untuk memantau rutinitas harian anabul (hewan peliharaan) kesayangan mereka tanpa ribet. Mulai dari jadwal makan, checklist kebersihan, sampai catatan stok makanan, semuanya dikemas dalam tampilan bernuansa pastel minimalis yang adem di mata!
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+</br>
 
-## React Compiler
+## ✨ Fitur-Fitur Gemas
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **👋 Onboarding Page yang Hangat:** Menyapa para *pawrents* dengan ramah saat pertama kali membuka aplikasi. Jika data masih kosong, kamu akan dipandu untuk menambahkan anabul pertamamu!
+* **🐱 Dynamic Pet Profiles:** Kamu bisa menambahkan hewan peliharaanmu sendiri (mendukung jenis Kucing dan Hamster), lengkap dengan nama, umur, dan foto estetiknya. Mau ganti foto atau ubah nama nanti? Tenang, ada fitur **Edit Profile** juga!
+* **📅 Daily Routine & History Log:** Checklist harian yang mencatat apakah anabul sudah diberi makan (Pagi, Siang, Malam), minum, diajak main, atau dibersihkan kandangnya. Kerennya lagi, kamu bisa mengintip **Riwayat (History)** hari-hari kemarin lewat fitur kalender simpel (*read-only mode* untuk hari yang lalu).
+* **📝 Pawrents Notes / Supply Tracker:** Tempat khusus buat nyatet pengingat penting. Misalnya: *"Makanan kucing Chester udah mau abis!"* atau *"Beli makanan hamster minggu ini"*. Tampilannya rapi, seragam, dan minimalis.
+* **📱 Responsive & Flat Design:** Menggunakan kombinasi warna pastel solid yang *cheerful* tapi tetap bersih. Layout otomatis menyesuaikan diri: **2-kolom rapi di desktop** dan **1-kolom nyaman di HP**.
+* **🔒 100% Client-Side Persistence:** Nggak perlu pusing mikirin server atau database. Semua data kamu tersimpan dengan aman langsung di `localStorage` browser perangkatmu.
 
-## Expanding the ESLint configuration
+</br>
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠️ Tech Stack yang Digunakan
+
+Aplikasi ini dibangun menggunakan kombinasi teknologi modern frontend yang super ringan dan cepat:
+
+* [React.js](https://react.dev/) — Framework UI berbasis komponen.
+* [Vite](https://vitejs.dev/) — Build tool super cepat untuk setup project React.
+* [Tailwind CSS](https://tailwindcss.com/) — Untuk utility-first styling yang rapi dan responsif.
+* [Lucide React](https://lucide.dev/) — Library icon modern dan minimalis untuk menggantikan emoji sistem yang jadul.
+
+</br>
+
+## 🚀 Cara Menjalankan Project secara Lokal
+
+Mau coba running atau ngembangin Pawket di laptop kamu? Ikuti langkah mudah ini:
+
+1. **Clone repository ini:**
+   ```bash
+   git clone [https://github.com/arindasr/pawket.git](https://github.com/arindasr/pawket.git)
+   cd pawket
