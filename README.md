@@ -25,14 +25,3 @@ Aplikasi ini dibangun menggunakan kombinasi teknologi modern frontend yang super
 * [Vite](https://vitejs.dev/) — Build tool super cepat untuk setup project React.
 * [Tailwind CSS](https://tailwindcss.com/) — Untuk utility-first styling yang rapi dan responsif.
 * [Lucide React](https://lucide.dev/) — Library icon modern dan minimalis untuk menggantikan emoji sistem yang jadul.
-
-</br>
-
-## 🚀 Cara Menjalankan Project secara Lokal
-
-Mau coba running atau ngembangin Pawket di laptop kamu? Ikuti langkah mudah ini:
-
-1. **Clone repository ini:**
-   ```bash
-   git clone [https://github.com/arindasr/pawket.git](https://github.com/arindasr/pawket.git)
-   cd pawket
