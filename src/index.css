@@ -5,10 +5,18 @@
     box-sizing: border-box;
   }
   body {
+    min-width: 320px;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     /* soft cream background */
     background-color: #f7f4ef;
     color: #2d2d2d;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
   }
 }
 

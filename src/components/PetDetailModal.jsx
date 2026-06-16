@@ -59,20 +59,20 @@ export default function PetDetailModal({ pet, isOpen, onClose, onRoutineChange, 
         )}
 
         {/* Pet summary header */}
-        <div className="flex items-center gap-4 p-4 bg-[#f3f0eb] border-2 border-[#ddd5c8] rounded-2xl">
+        <div className="flex items-start gap-3 rounded-2xl border-2 border-[#ddd5c8] bg-[#f3f0eb] p-3 sm:items-center sm:gap-4 sm:p-4">
           {pet.photo ? (
             <img
               src={pet.photo}
               alt={pet.name}
-              className="w-16 h-16 rounded-2xl object-cover border-2 border-white"
+              className="h-14 w-14 flex-shrink-0 rounded-2xl border-2 border-white object-cover sm:h-16 sm:w-16"
             />
           ) : (
-            <div className="w-16 h-16 rounded-2xl bg-white border-2 border-[#ddd5c8] flex items-center justify-center">
+            <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border-2 border-[#ddd5c8] bg-white sm:h-16 sm:w-16">
               <TypeIcon size={32} strokeWidth={1.5} className="text-[#c4a882]" />
             </div>
           )}
-          <div className="flex-1">
-            <h3 className="font-extrabold text-[#2d2520] text-lg leading-tight">{pet.name}</h3>
+          <div className="min-w-0 flex-1">
+            <h3 className="break-words text-lg font-extrabold leading-tight text-[#2d2520]">{pet.name}</h3>
             {pet.age && (
               <p className="text-xs text-[#8a7968] font-medium mt-0.5 flex items-center gap-1">
                 <Cake size={11} strokeWidth={2} />{pet.age}
@@ -142,12 +142,12 @@ export default function PetDetailModal({ pet, isOpen, onClose, onRoutineChange, 
                     >
                       {checked && <Check size={11} strokeWidth={3} />}
                     </div>
-                    <div className="flex-1">
+                    <div className="min-w-0 flex-1">
                       <span className={`text-sm font-semibold ${checked ? 'line-through text-[#b0a898]' : 'text-[#3d3530]'}`}>
                         {item.label}
                       </span>
                       {item.time && (
-                        <span className={`ml-2 text-xs ${checked ? 'text-[#c4b9a8]' : 'text-[#9e8e7e]'}`}>
+                        <span className={`ml-0 block text-xs min-[380px]:ml-2 min-[380px]:inline ${checked ? 'text-[#c4b9a8]' : 'text-[#9e8e7e]'}`}>
                           {item.time}
                         </span>
                       )}

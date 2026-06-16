@@ -28,15 +28,15 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'sm
       />
 
       {/* Panel */}
-      <div className={`relative w-full ${maxWidth} bg-[#fdfaf6] rounded-t-3xl sm:rounded-3xl shadow-lg max-h-[92vh] flex flex-col overflow-hidden border-2 border-[#e8e0d5]`}>
+      <div className={`relative w-full ${maxWidth} bg-[#fdfaf6] rounded-t-3xl sm:rounded-3xl shadow-lg max-h-[92dvh] flex flex-col overflow-hidden border-2 border-[#e8e0d5]`}>
         {/* Drag handle (mobile only) */}
         <div className="flex justify-center pt-3 pb-1 sm:hidden">
           <div className="w-10 h-1 rounded-full bg-[#d9d0c4]" />
         </div>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b-2 border-[#ede8e0]">
-          <h2 className="text-base font-bold text-[#3d3530]">{title}</h2>
+        <div className="flex items-center justify-between gap-3 border-b-2 border-[#ede8e0] px-4 py-4 sm:px-6">
+          <h2 className="min-w-0 truncate text-base font-bold text-[#3d3530]">{title}</h2>
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-full bg-[#ede8e0] text-[#8a7968] hover:bg-[#e0d8cc] transition-colors"
@@ -47,7 +47,7 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'sm
         </div>
 
         {/* Body */}
-        <div className="overflow-y-auto flex-1 px-6 py-5">
+        <div className="overflow-y-auto flex-1 px-4 py-5 sm:px-6">
           {children}
         </div>
       </div>

@@ -55,7 +55,7 @@ export default function PetForm({
         <label className="block text-sm font-bold text-[#5c4f3d] mb-1.5">
           Pet Type
         </label>
-        <div className="flex gap-3">
+        <div className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2">
           {PET_TYPES.map(({ value, label, Icon }) => (
             <button
               key={value}
@@ -93,11 +93,11 @@ export default function PetForm({
         <label className="block text-sm font-bold text-[#5c4f3d] mb-1.5">
           Pet Photo <span className="text-[#9e8e7e] font-normal">(optional)</span>
         </label>
-        <div className="flex gap-2 mb-3">
+        <div className="grid grid-cols-1 gap-2 mb-3 min-[380px]:grid-cols-2">
           <button
             type="button"
             onClick={() => setPhotoMode('url')}
-            className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border-2 font-bold transition-colors ${
+            className={`flex items-center justify-center gap-1.5 text-xs px-3 py-1.5 rounded-full border-2 font-bold transition-colors ${
               photoMode === 'url'
                 ? 'bg-[#fde8df] border-[#f4cbb8] text-[#9b4b2c]'
                 : 'bg-white border-[#ddd5c8] text-[#8a7968]'
@@ -109,7 +109,7 @@ export default function PetForm({
           <button
             type="button"
             onClick={() => setPhotoMode('file')}
-            className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border-2 font-bold transition-colors ${
+            className={`flex items-center justify-center gap-1.5 text-xs px-3 py-1.5 rounded-full border-2 font-bold transition-colors ${
               photoMode === 'file'
                 ? 'bg-[#fde8df] border-[#f4cbb8] text-[#9b4b2c]'
                 : 'bg-white border-[#ddd5c8] text-[#8a7968]'
