@@ -35,25 +35,28 @@ const HamsterIcon = ({ size = 20, strokeWidth = 2, className = "" }) => (
 const TYPE_STYLE = {
   Cat: {
     card:   'bg-[#fde8df] border-[#e8c9b8]',
-    badge:  'bg-[#E07A5F] text-white',        // UBAH: background #E07A5F, text putih
+    badge:  'bg-[#E07A5F] text-white',
     bar:    'bg-[#d4a017]',
     avatar: 'bg-[#f5d5c8]',
+    border: '#e8c9b8',  // tambah: warna border untuk foto
     Icon:   Cat,
   },
   Hamster: {
-    card:   'bg-[#fde8df] border-[#e8c9b8]',
-    badge:  'bg-[#E07A5F] text-white',        // UBAH: background #E07A5F, text putih
+    card:   'bg-[#FFF0CC] border-[#f5e6c4]',
+    badge:  'bg-[#E07A5F] text-white',
     bar:    'bg-[#d4a017]',
-    avatar: 'bg-[#f5d5c8]',
+    avatar: 'bg-[#faeed6]',
+    border: '#f5e6c4',  // tambah: warna border untuk foto
     Icon:   HamsterIcon,
   },
 }
 
 const FALLBACK_STYLE = {
   card:   'bg-[#fde8df] border-[#e8c9b8]',
-  badge:  'bg-[#E07A5F] text-white',          // UBAH: background #E07A5F, text putih
+  badge:  'bg-[#E07A5F] text-white',
   bar:    'bg-[#c4a882]',
   avatar: 'bg-[#f5d5c8]',
+  border: '#e8c9b8',
   Icon:   HamsterIcon,
 }
 
@@ -103,7 +106,8 @@ export default function PetCard({ pet, onClick, onEdit, isReadOnly }) {
               <img
                 src={pet.photo}
                 alt={pet.name}
-                className="h-16 w-16 rounded-2xl border-2 border-white object-cover sm:h-[72px] sm:w-[72px]"
+                className={`h-16 w-16 rounded-2xl border-2 object-cover sm:h-[72px] sm:w-[72px]`}
+                style={{ borderColor: style.border }}  // UBAH: pakai border color dari style
                 onError={e => {
                   e.target.style.display = 'none'
                   const sib = e.target.nextElementSibling
@@ -113,9 +117,10 @@ export default function PetCard({ pet, onClick, onEdit, isReadOnly }) {
             ) : null}
             {/* Fallback avatar */}
             <div
-              className={`${pet.photo ? 'hidden' : 'flex'} h-16 w-16 items-center justify-center rounded-2xl border-2 border-white sm:h-[72px] sm:w-[72px] ${style.avatar}`}
+              className={`${pet.photo ? 'hidden' : 'flex'} h-16 w-16 items-center justify-center rounded-2xl border-2 sm:h-[72px] sm:w-[72px] ${style.avatar}`}
+              style={{ borderColor: style.border }}  // UBAH: pakai border color dari style
             >
-              <TypeIcon size={32} strokeWidth={1.5} className="text-[#7a5c38] opacity-70" />
+              <TypeIcon size={32} strokeWidth={1.5} className="text-[#8a7050] opacity-70" />
             </div>
           </div>
 

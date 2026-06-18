@@ -1,11 +1,95 @@
 import { useState } from 'react'
-import { Plus, Cat, Shapes, CalendarDays } from 'lucide-react'
+import { Plus, Cat, Shapes, CalendarDays, NotebookPen, X, ClipboardList, PawPrint, StickyNote, ClipboardCheck, Bed } from 'lucide-react'
 import PetCard from './PetCard'
 import PetDetailModal from './PetDetailModal'
 import EditPetModal from './EditPetModal'
 import { todayKey, formatDateLabel } from '../utils/dateUtils'
+import AddNoteModal from './AddNoteModal'
+import dogPawImage from '../assets/dog-paw.png'
 
-// Custom Hamster Icon
+// ── Decorative paw SVG (copy dari AuthPage) ──
+function PawDecor({ size = 48, className = '' }) {
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 64 64" fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-hidden="true"
+    >
+      <ellipse cx="32" cy="42" rx="14" ry="12" fill="currentColor" />
+      <ellipse cx="18" cy="28" rx="6"  ry="7"  fill="currentColor" />
+      <ellipse cx="31" cy="23" rx="6"  ry="7"  fill="currentColor" />
+      <ellipse cx="44" cy="26" rx="6"  ry="7"  fill="currentColor" />
+      <ellipse cx="54" cy="35" rx="5"  ry="6"  fill="currentColor" />
+    </svg>
+  )
+}
+
+// ── Generate paw positions (sama seperti di AuthPage) ──
+const generatePawPositions = () => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+  const positions = []
+  
+  const cols = isMobile ? 5 : 8
+  const rows = isMobile ? 5 : 7
+  const total = cols * rows
+  
+  for (let i = 0; i < total; i++) {
+    const col = i % cols
+    const row = Math.floor(i / cols)
+    
+    const offsetX = (Math.random() - 0.5) * 0.4
+    const offsetY = (Math.random() - 0.5) * 0.4
+    
+    let top = ((row + 0.5) / rows + offsetY / rows) * 100
+    let left = ((col + 0.5) / cols + offsetX / cols) * 100
+    
+    top = Math.max(3, Math.min(97, top))
+    left = Math.max(3, Math.min(97, left))
+    
+    const size = isMobile 
+      ? 22 + Math.floor(Math.random() * 20)
+      : 30 + Math.floor(Math.random() * 28)
+    
+    positions.push({
+      size,
+      top,
+      left,
+      rotate: `${(Math.random() - 0.5) * 60}deg`,
+      opacity: 0.08 + Math.random() * 0.12
+    })
+  }
+  
+  return positions
+}
+
+// ── Simpan di localStorage biar permanen ──
+const getPawPositions = () => {
+  const STORAGE_KEY = 'pawket_dashboard_paw_positions'
+  
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      try {
+        return JSON.parse(saved)
+      } catch (e) {}
+    }
+  }
+  
+  const positions = generatePawPositions()
+  
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(positions))
+    } catch (e) {}
+  }
+  
+  return positions
+}
+
+const INITIAL_PAW_POSITIONS = getPawPositions()
+
+// ── Custom Hamster Icon ──
 const HamsterIcon = ({ size = 14, strokeWidth = 2.5, className = "" }) => (
   <svg 
     width={size} 
@@ -39,6 +123,50 @@ const FILTERS = [
   { key: 'Hamster', label: 'Hamsters', Icon: HamsterIcon },
 ]
 
+function HeroPetIllustration() {
+  return (
+    <div className="flex h-full w-full items-center justify-center">
+      <img
+        src={dogPawImage}
+        alt=""
+        aria-hidden="true"
+        className="h-40 w-40 object-contain drop-shadow-sm"
+      />
+    </div>
+  )
+}
+
+function StatCard({ Icon, value, label, helper, tone, imageSrc }) {
+  const toneClass = {
+    peach: 'bg-[#fde8df] text-[#c97b4b]',
+    gold: 'bg-[#fff0cc] text-[#c99a2e]',
+    green: 'bg-[#e3f1d8] text-[#6e9b55]',
+  }[tone]
+
+  return (
+    <div className="rounded-2xl border border-[#ece1d6] bg-white/75 p-4">
+      <div className="flex items-center gap-3">
+        <span className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl ${toneClass}`}>
+          {imageSrc ? (
+            <img 
+              src={imageSrc} 
+              alt={label} 
+              className="h-7 w-7 object-contain"
+            />
+          ) : (
+            <Icon size={18} strokeWidth={2.4} />
+          )}
+        </span>
+        <div>
+          <p className="text-3xl font-black leading-none text-[#2d2520]">{value}</p>
+          <p className="mt-1 text-xs font-extrabold text-[#2d2520]">{label}</p>
+        </div>
+      </div>
+      <p className="mt-4 text-xs font-medium text-[#9e8e7e]">{helper}</p>
+    </div>
+  )
+}
+
 export default function Dashboard({
   pets,
   onAddPet,
@@ -46,10 +174,15 @@ export default function Dashboard({
   onDeletePet,
   onEditPet,
   currentDateKey,
+  user,
+  notes = [],
+  onAddNote,
+  onDeleteNote,
 }) {
   const [filter, setFilter] = useState('All')
   const [detailPet, setDetailPet] = useState(null)
   const [editingPet, setEditingPet] = useState(null)
+  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false)
 
   const isReadOnly = currentDateKey !== todayKey()
   const filtered = filter === 'All' ? pets : pets.filter(p => p.type === filter)
@@ -58,112 +191,240 @@ export default function Dashboard({
   pets.forEach(p => { if (counts[p.type] !== undefined) counts[p.type]++ })
 
   const dateLabel = formatDateLabel(currentDateKey, true)
+  const routineKeys = ['meal_morning', 'meal_noon', 'meal_night', 'water_refill', 'activity_playtime', 'activity_clean']
+  const routinesPending = pets.reduce((total, pet) => (
+    total + routineKeys.filter(key => !pet.routine?.[key]).length
+  ), 0)
+  const todaysNotes = notes.filter(note => {
+    const noteDate = new Date(note.createdAt)
+    const today = new Date()
+    return noteDate.getFullYear() === today.getFullYear()
+      && noteDate.getMonth() === today.getMonth()
+      && noteDate.getDate() === today.getDate()
+  })
+
+  function handleAddNote(text) {
+    if (!text || !onAddNote) return
+    onAddNote({
+      id: crypto.randomUUID(),
+      text,
+      petName: 'General',
+      createdAt: Date.now(),
+    })
+  }
+
+  const pawPositions = INITIAL_PAW_POSITIONS
 
   return (
-    <div className="min-h-full bg-[#f7f4ef] pb-8">
-      {/* ── Sub-header ── */}
-      <div className="px-4 sm:px-8 pt-6 sm:pt-8 pb-5 sm:pb-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center">
-            <h1 className="text-[clamp(2rem,12vw,3.75rem)] font-extrabold text-[#2d2520] tracking-tight leading-tight">
-              A happy pet,
-            </h1>
-            <h1 className="text-[clamp(2rem,12vw,3.75rem)] font-extrabold text-[#2d2520] tracking-tight leading-tight">
-              a happy home.
-            </h1>
-            <p className="text-base sm:text-lg text-[#9e8e7e] font-medium mt-3">
-              Here are your beloved babies
-            </p>
-
-            <div className="flex flex-wrap items-center justify-center gap-1.5 mt-2">
-              <CalendarDays size={13} strokeWidth={2} className="text-[#9e8e7e]" />
-              <span className="text-sm text-[#9e8e7e] font-medium">{dateLabel}</span>
-              {isReadOnly && (
-                <span className="text-xs text-[#78610a] bg-[#fef9e7] border border-[#f5e5a0] font-bold px-2 py-0.5 rounded-full ml-1">
-                  view only
-                </span>
-              )}
-            </div>
+    <div className="relative min-h-full bg-[#faf7f2] pb-12 overflow-hidden">
+      
+      {/* ── Background paw prints ── */}
+      <div className="pointer-events-none select-none absolute inset-0 overflow-visible" aria-hidden="true">
+        {pawPositions.map((p, i) => (
+          <div key={`dash-paw-${i}`}
+            className="absolute text-[#d9c8aa]"
+            style={{ 
+              top: `${p.top}%`, 
+              left: `${p.left}%`,
+              transform: `translate(-50%, -50%) rotate(${p.rotate})`,
+              opacity: p.opacity
+            }}
+          >
+            <PawDecor size={p.size} />
           </div>
-        </div>
+        ))}
       </div>
 
-      {/* ── Filter tabs + Add Pet ── */}
-      <div className="px-4 sm:px-8 mb-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 flex-1">
-              {FILTERS.map(({ key, label, Icon }) => {
-                const active = filter === key
-                return (
+      <div className="relative z-10 px-4 sm:px-8">
+        <div className="mx-auto max-w-7xl">
+          {/* ── Top Section: Summary + Notes ── */}
+          <div className="py-6 lg:py-8">
+            <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-stretch">
+              {/* Left Card - Full height */}
+              <div className="grid gap-6 rounded-[1.25rem] border border-[#e3d8cc] bg-white/80 backdrop-blur-sm p-5 shadow-sm md:grid-cols-[180px_1fr] lg:p-6">
+                <div className="hidden items-end justify-center md:flex">
+                  <HeroPetIllustration />
+                </div>
+
+                <div>
+                  <h1 className="text-2xl font-black tracking-tight text-[#2d2520] sm:text-3xl">
+                    Hello, {user?.name || 'Pawrents'}
+                  </h1>
+                  <p className="mt-2 text-sm font-bold text-[#9e8e7e]">
+                    Here's what's happening with your pets today.
+                  </p>
+
+                  <div className="mt-4 flex flex-wrap items-center gap-2">
+                    <CalendarDays size={15} strokeWidth={2.2} className="text-[#9e8e7e]" />
+                    <span className="text-sm font-semibold text-[#8a7968]">{dateLabel}</span>
+                    {isReadOnly && (
+                      <span className="rounded-full border border-[#f5e5a0] bg-[#fef9e7] px-2 py-0.5 text-xs font-bold text-[#78610a]">
+                        view only
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                    <StatCard
+                      Icon={PawPrint}
+                      value={pets.length}
+                      label="Total Pets"
+                      helper="All your furry friends"
+                      tone="peach"
+                    />
+                    <StatCard
+                      Icon={StickyNote}
+                      value={todaysNotes.length}
+                      label="Notes Today"
+                      helper="Notes to check"
+                      tone="gold"
+                    />
+                    <StatCard
+                      Icon={ClipboardCheck}
+                      value={routinesPending}
+                      label="Routines Pending"
+                      helper="Need your attention"
+                      tone="green"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* ── Right Card - Today's Notes ── */}
+              <div className="rounded-[1.25rem] border border-[#e3d8cc] bg-white/80 backdrop-blur-sm p-5 shadow-sm lg:p-6 flex flex-col h-[320px] min-h-[320px]">
+                <div className="mb-3 flex items-center justify-between flex-shrink-0">
+                  <h2 className="text-lg font-black text-[#2d2520]">Today's Notes</h2>
                   <button
-                    key={key}
-                    onClick={() => setFilter(key)}
-                    className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-2xl text-sm font-bold border-2 transition-colors ${
-                      active
-                        ? 'bg-[#ede8e0] border-[#d9c8aa] text-[#7a5c38]'
-                        : 'bg-white border-[#ddd5c8] text-[#8a7968] hover:border-[#c4b9a8] hover:bg-[#f5f2ed]'
-                    }`}
+                    onClick={() => setIsNoteModalOpen(true)}
+                    className="flex items-center gap-1.5 rounded-2xl border border-[#e9b6a7] px-3 py-1.5 text-sm font-extrabold text-[#e07a5f] transition-colors hover:bg-[#fde8df] flex-shrink-0"
                   >
-                    <Icon size={14} strokeWidth={2.5} />
-                    {label}
-                    <span className={`text-xs font-extrabold px-1.5 py-0.5 rounded-full ${
-                      active
-                        ? 'bg-[#d9c8aa] text-[#7a5c38]'
-                        : 'bg-[#f0ebe3] text-[#7a6a58]'
-                    }`}>
-                      {counts[key]}
-                    </span>
+                    <Plus size={14} strokeWidth={3} />
+                    Add Note
                   </button>
-                )
-              })}
-            </div>
+                </div>
 
-            {!isReadOnly && (
-              <button
-                onClick={onAddPet}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#e07a5f] px-5 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#c96a50] active:scale-95 sm:w-auto sm:flex-shrink-0 sm:py-2"
-                aria-label="Add a new pet"
-              >
-                <Plus size={16} strokeWidth={3} />
-                <span>Add Pet</span>
-              </button>
-            )}
+                <div className="border-t border-[#ede8e0] mb-3" />
+
+                <div className="flex-1 min-h-0 overflow-y-auto">
+                  {todaysNotes.length === 0 ? (
+                    <div className="flex h-full min-h-[200px] flex-col items-center justify-center text-center">
+                      <ClipboardList size={48} strokeWidth={1.2} className="mb-3 text-[#ead8cd]" />
+                      <p className="text-sm font-black text-[#2d2520]">No notes for today</p>
+                      <p className="mt-1 max-w-xs text-xs font-medium leading-relaxed text-[#9e8e7e]">
+                        Click "Add Note" to write something important.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="grid gap-2">
+                      {todaysNotes.map(note => (
+                        <div key={note.id} className="group flex items-start gap-2 rounded-xl border border-[#eee4db] bg-[#fdfaf6] p-2.5">
+                          <NotebookPen size={14} strokeWidth={2.2} className="mt-0.5 flex-shrink-0 text-[#e07a5f]" />
+                          <div className="min-w-0 flex-1">
+                            <p className="break-words text-sm font-semibold leading-relaxed text-[#5c4f3d] line-clamp-2">{note.text}</p>
+                            <p className="mt-0.5 text-[10px] font-bold text-[#b0a898]">{note.petName || 'General'}</p>
+                          </div>
+                          {onDeleteNote && (
+                            <button
+                              onClick={() => onDeleteNote(note.id)}
+                              className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg text-[#b0a898] hover:bg-[#fde8df] hover:text-[#e07a5f]"
+                              aria-label="Delete note"
+                            >
+                              <X size={12} strokeWidth={2.5} />
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* ── Pet Cards ── */}
-      <div className="px-4 sm:px-8">
-        <div className="max-w-7xl mx-auto">
-          {filtered.length === 0 ? (
-            <div className="text-center py-20 text-[#b0a898]">
-              <Shapes size={40} className="mx-auto mb-3 opacity-40" strokeWidth={1.5} />
-              <p className="text-sm font-semibold">
-                No {filter === 'All' ? 'pets' : filter.toLowerCase() + 's'} found.
-              </p>
-              {filter !== 'All' && (
-                <button
-                  onClick={() => setFilter('All')}
-                  className="mt-4 text-[#e07a5f] text-sm font-bold"
-                >
-                  Show all pets
-                </button>
-              )}
+          {/* ── Pets Section (WRAPPED IN CARD) ── */}
+          <div className="pb-8">
+            <div className="rounded-[1.25rem] border border-[#e3d8cc] bg-white/80 backdrop-blur-sm p-5 shadow-sm lg:p-6">
+              {/* Header */}
+              <div className="mb-4 flex items-center justify-between gap-4">
+                <h2 className="text-xl font-black text-[#2d2520]">Here are your beloved babies</h2>
+                {!isReadOnly && (
+                  <button
+                    onClick={onAddPet}
+                    className="flex items-center justify-center gap-2 rounded-2xl border border-[#e9b6a7] bg-white px-4 py-2 text-sm font-extrabold text-[#e07a5f] transition-colors hover:bg-[#fde8df] active:scale-95"
+                    aria-label="Add a new pet"
+                  >
+                    <Plus size={16} strokeWidth={3} />
+                    <span>Add Pet</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Garis pembatas */}
+              <div className="border-t border-[#ede8e0] mb-4" />
+
+              {/* Filter tabs */}
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 flex-1">
+                  {FILTERS.map(({ key, label, Icon }) => {
+                    const active = filter === key
+                    return (
+                      <button
+                        key={key}
+                        onClick={() => setFilter(key)}
+                        className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-bold border transition-colors ${
+                          active
+                            ? 'bg-[#ede8e0] border-[#d9c8aa] text-[#7a5c38]'
+                            : 'bg-white border-[#ddd5c8] text-[#8a7968] hover:border-[#c4b9a8] hover:bg-[#f5f2ed]'
+                        }`}
+                      >
+                        <Icon size={14} strokeWidth={2.5} />
+                        {label}
+                        <span className={`text-xs font-extrabold px-1.5 py-0.5 rounded-full ${
+                          active
+                            ? 'bg-[#d9c8aa] text-[#7a5c38]'
+                            : 'bg-[#f0ebe3] text-[#7a6a58]'
+                        }`}>
+                          {counts[key]}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Pet Cards */}
+              <div className="pt-4">
+                {filtered.length === 0 ? (
+                  <div className="text-center py-16 text-[#b0a898]">
+                    <Bed size={40} className="mx-auto mb-3 opacity-40" strokeWidth={1.5} />
+                    <p className="text-sm font-semibold">
+                      No {filter === 'All' ? 'pets' : filter.toLowerCase() + 's'} found.
+                    </p>
+                    {filter !== 'All' && (
+                      <button
+                        onClick={() => setFilter('All')}
+                        className="mt-3 text-[#e07a5f] text-sm font-bold"
+                      >
+                        Show all pets
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {filtered.map(pet => (
+                      <PetCard
+                        key={pet.id}
+                        pet={pet}
+                        onClick={() => setDetailPet(pet)}
+                        onEdit={p => setEditingPet(p)}
+                        isReadOnly={isReadOnly}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {filtered.map(pet => (
-                <PetCard
-                  key={pet.id}
-                  pet={pet}
-                  onClick={() => setDetailPet(pet)}
-                  onEdit={p => setEditingPet(p)}
-                  isReadOnly={isReadOnly}
-                />
-              ))}
-            </div>
-          )}
+          </div>
         </div>
       </div>
 
@@ -188,6 +449,12 @@ export default function Dashboard({
           onEditPet(updated)
           setEditingPet(null)
         }}
+      />
+
+      <AddNoteModal
+        isOpen={isNoteModalOpen}
+        onClose={() => setIsNoteModalOpen(false)}
+        onAdd={handleAddNote}
       />
     </div>
   )
