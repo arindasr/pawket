@@ -1,31 +1,39 @@
 @import "tailwindcss";
 
 @layer base {
-  * {
-    box-sizing: border-box;
-  }
-  body {
-    min-width: 320px;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    /* soft cream background */
-    background-color: #f7f4ef;
-    color: #2d2d2d;
-  }
+    * {
+        box-sizing: border-box;
+    }
+    html {
+        scroll-behavior: smooth;
+    }
 
-  button,
-  input,
-  select,
-  textarea {
-    font: inherit;
-  }
+    body {
+        min-width: 320px;
+        font-family:
+            "Segoe UI",
+            system-ui,
+            -apple-system,
+            sans-serif;
+        /* soft cream background */
+        background-color: #f7f4ef;
+        color: #2d2d2d;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+        font: inherit;
+    }
 }
 
 @layer utilities {
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
 }
