@@ -222,7 +222,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setIsHistoryOpen(true)}
-                className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl text-[#b0a898] transition-colors hover:bg-[#f5f2ed] hover:text-[#7a5c38]"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-[#b0a898] transition-colors hover:bg-[#f5f2ed] hover:text-[#7a5c38]"
                 aria-label="History"
               >
                 <CalendarDays size={16} strokeWidth={2.5} />
@@ -235,7 +235,7 @@ export default function App() {
                 aria-label="Open profile"
                 aria-current={currentPage === "profile" ? "page" : undefined}
               >
-                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-[#fde8df] text-[#c97b4b]">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#fde8df] text-[#c97b4b]">
                   <UserRound size={16} strokeWidth={2.5} />
                 </div>
                 <div className="hidden min-w-0 sm:block">

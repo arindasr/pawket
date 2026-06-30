@@ -175,7 +175,7 @@ function StatCard({ Icon, value, label, helper, tone, imageSrc }) {
     <div className="rounded-2xl border border-[#ece1d6] bg-white/75 p-3 sm:p-4">
       <div className="flex flex-col items-center gap-2 text-center sm:flex-row sm:items-center sm:gap-3 sm:text-left">
         <span
-          className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-2xl sm:h-10 sm:w-10 ${toneClass}`}
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl sm:h-10 sm:w-10 ${toneClass}`}
         >
           {imageSrc ? (
             <img
@@ -339,7 +339,7 @@ export default function Dashboard({
               {/* Left Card - Full height */}
               <section
                 id="home"
-                className="scroll-mt-24 relative overflow-hidden rounded-[1.5rem] border border-[#e3d8cc] bg-white/80 p-4 shadow-sm backdrop-blur-sm sm:p-5 md:grid md:grid-cols-[180px_1fr] md:gap-6 md:p-5 lg:p-6"
+                className="scroll-mt-24 relative overflow-hidden rounded-3xl border border-[#e3d8cc] bg-white/80 p-4 shadow-sm backdrop-blur-sm sm:p-5 md:grid md:grid-cols-[180px_1fr] md:gap-6 md:p-5 lg:p-6"
               >
                 <div className="hidden items-end justify-center md:flex">
                   <HeroPetIllustration />
@@ -399,15 +399,15 @@ export default function Dashboard({
               {/* ── Right Card - Today's Notes ── */}
               <div
                 id="notes"
-                className="scroll-mt-24 rounded-[1.25rem] border border-[#e3d8cc] bg-white/80 p-5 shadow-sm backdrop-blur-sm flex min-h-[320px] h-[320px] flex-col lg:p-6"
+                className="scroll-mt-24 rounded-[1.25rem] border border-[#e3d8cc] bg-white/80 p-5 shadow-sm backdrop-blur-sm flex min-h-80 h-80 flex-col lg:p-6"
               >
-                <div className="mb-3 flex items-center justify-between flex-shrink-0">
+                <div className="mb-3 flex shrink-0 items-center justify-between">
                   <h2 className="text-lg font-black text-[#2d2520]">
                     Today's Notes
                   </h2>
                   <button
                     onClick={() => setIsNoteModalOpen(true)}
-                    className="flex items-center gap-1.5 rounded-2xl border border-[#e9b6a7] px-3 py-1.5 text-sm font-extrabold text-[#e07a5f] transition-colors hover:bg-[#fde8df] flex-shrink-0"
+                    className="flex shrink-0 items-center gap-1.5 rounded-2xl border border-[#e9b6a7] px-3 py-1.5 text-sm font-extrabold text-[#e07a5f] transition-colors hover:bg-[#fde8df]"
                   >
                     <Plus size={14} strokeWidth={3} />
                     Add Note
@@ -418,7 +418,7 @@ export default function Dashboard({
 
                 <div className="flex-1 min-h-0 overflow-y-auto">
                   {todaysNotes.length === 0 ? (
-                    <div className="flex h-full min-h-[200px] flex-col items-center justify-center text-center">
+                    <div className="flex h-full min-h-50 flex-col items-center justify-center text-center">
                       <ClipboardList
                         size={48}
                         strokeWidth={1.2}
@@ -441,10 +441,10 @@ export default function Dashboard({
                           <NotebookPen
                             size={14}
                             strokeWidth={2.2}
-                            className="mt-0.5 flex-shrink-0 text-[#e07a5f]"
+                            className="mt-0.5 shrink-0 text-[#e07a5f]"
                           />
                           <div className="min-w-0 flex-1">
-                            <p className="break-words text-sm font-semibold leading-relaxed text-[#5c4f3d] line-clamp-2">
+                            <p className="wrap-break-word text-sm font-semibold leading-relaxed text-[#5c4f3d] line-clamp-2">
                               {note.text}
                             </p>
                             <p className="mt-0.5 text-[10px] font-bold text-[#b0a898]">
@@ -454,7 +454,7 @@ export default function Dashboard({
                           {onDeleteNote && (
                             <button
                               onClick={() => onDeleteNote(note.id)}
-                              className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg text-[#b0a898] hover:bg-[#fde8df] hover:text-[#e07a5f]"
+                              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-[#b0a898] hover:bg-[#fde8df] hover:text-[#e07a5f]"
                               aria-label="Delete note"
                             >
                               <X size={12} strokeWidth={2.5} />
@@ -480,7 +480,7 @@ export default function Dashboard({
                 {!isReadOnly && (
                   <button
                     onClick={onAddPet}
-                    className="flex flex-shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-2xl border border-[#e9b6a7] bg-white px-3 py-1.5 text-sm font-extrabold text-[#e07a5f] transition-colors hover:bg-[#fde8df] active:scale-95"
+                    className="flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-2xl border border-[#e9b6a7] bg-white px-3 py-1.5 text-sm font-extrabold text-[#e07a5f] transition-colors hover:bg-[#fde8df] active:scale-95"
                     aria-label="Add a new pet"
                   >
                     <Plus size={14} strokeWidth={3} />
@@ -501,7 +501,7 @@ export default function Dashboard({
                       <button
                         key={key}
                         onClick={() => setFilter(key)}
-                        className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-bold border transition-colors ${
+                        className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-bold border transition-colors ${
                           active
                             ? "bg-[#ede8e0] border-[#d9c8aa] text-[#7a5c38]"
                             : "bg-white border-[#ddd5c8] text-[#8a7968] hover:border-[#c4b9a8] hover:bg-[#f5f2ed]"
@@ -567,7 +567,7 @@ export default function Dashboard({
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-40 px-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] pt-3 sm:hidden">
-        <div className="mx-auto flex max-w-md items-center justify-between rounded-[2rem] border border-[#f1ebe4] bg-white/95 px-3 py-2 shadow-[0_-10px_30px_rgba(69,39,23,0.08)] backdrop-blur">
+        <div className="mx-auto flex max-w-md items-center justify-between rounded-4xl border border-[#f1ebe4] bg-white/95 px-3 py-2 shadow-[0_-10px_30px_rgba(69,39,23,0.08)] backdrop-blur">
           {MOBILE_NAV_ITEMS.map(({ id, label, Icon }) => {
             const isActive = activeSection === id;
 

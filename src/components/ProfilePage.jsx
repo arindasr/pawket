@@ -36,7 +36,7 @@ export default function ProfilePage({
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(300px,0.9fr)] lg:items-stretch">
             <div>
               <div className="flex items-center gap-4">
-                <div className="flex h-16 w-16 items-center justify-center rounded-[1.5rem] bg-[#fde8df] text-[#c97b4b] sm:h-20 sm:w-20">
+                <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[#fde8df] text-[#c97b4b] sm:h-20 sm:w-20">
                   <UserRound size={34} strokeWidth={2.2} />
                 </div>
                 <div className="min-w-0">
@@ -47,15 +47,17 @@ export default function ProfilePage({
                     {user?.name || "Pawrents"}
                   </h1>
                   <div className="mt-2 inline-flex max-w-full items-center gap-2 rounded-full bg-[#f5f2ed] px-3 py-1 text-sm font-semibold text-[#8a7968]">
-                    <Mail size={14} strokeWidth={2.5} className="flex-shrink-0" />
-                    <span className="truncate">{user?.email || "No email saved"}</span>
+                    <Mail size={14} strokeWidth={2.5} className="shrink-0" />
+                    <span className="truncate">
+                      {user?.email || "No email saved"}
+                    </span>
                   </div>
                 </div>
               </div>
 
               <p className="mt-5 max-w-2xl text-sm font-medium leading-relaxed text-[#8a7968] sm:text-base">
-                Keep track of your Pawket account and get a quick overview of your pets,
-                notes, and routines from one place.
+                Keep track of your Pawket account and get a quick overview of
+                your pets, notes, and routines from one place.
               </p>
 
               <div className="mt-6 grid gap-3 sm:grid-cols-3">
@@ -63,29 +65,41 @@ export default function ProfilePage({
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#fde8df] text-[#c97b4b]">
                     <PawPrint size={20} strokeWidth={2.4} />
                   </div>
-                  <p className="mt-4 text-2xl font-black text-[#2d2520]">{petCount}</p>
-                  <p className="mt-1 text-sm font-bold text-[#8a7968]">Pets registered</p>
+                  <p className="mt-4 text-2xl font-black text-[#2d2520]">
+                    {petCount}
+                  </p>
+                  <p className="mt-1 text-sm font-bold text-[#8a7968]">
+                    Pets registered
+                  </p>
                 </div>
 
                 <div className="rounded-2xl border border-[#ece1d6] bg-[#fdfaf6] p-4">
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#fff0cc] text-[#c99a2e]">
                     <StickyNote size={20} strokeWidth={2.4} />
                   </div>
-                  <p className="mt-4 text-2xl font-black text-[#2d2520]">{todaysNotesCount}</p>
-                  <p className="mt-1 text-sm font-bold text-[#8a7968]">Notes today</p>
+                  <p className="mt-4 text-2xl font-black text-[#2d2520]">
+                    {todaysNotesCount}
+                  </p>
+                  <p className="mt-1 text-sm font-bold text-[#8a7968]">
+                    Notes today
+                  </p>
                 </div>
 
                 <div className="rounded-2xl border border-[#ece1d6] bg-[#fdfaf6] p-4">
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#e3f1d8] text-[#6e9b55]">
                     <ClipboardCheck size={20} strokeWidth={2.4} />
                   </div>
-                  <p className="mt-4 text-2xl font-black text-[#2d2520]">{routinesPending}</p>
-                  <p className="mt-1 text-sm font-bold text-[#8a7968]">Routines pending</p>
+                  <p className="mt-4 text-2xl font-black text-[#2d2520]">
+                    {routinesPending}
+                  </p>
+                  <p className="mt-1 text-sm font-bold text-[#8a7968]">
+                    Routines pending
+                  </p>
                 </div>
               </div>
             </div>
 
-            <aside className="rounded-[1.5rem] border border-[#ece1d6] bg-[#fdfaf6] p-5">
+            <aside className="rounded-3xl border border-[#ece1d6] bg-[#fdfaf6] p-5">
               <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#b0a898]">
                 Quick Actions
               </p>
