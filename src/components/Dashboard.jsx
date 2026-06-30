@@ -146,8 +146,8 @@ const FILTERS = [
 
 const MOBILE_NAV_ITEMS = [
   { id: "home", label: "Home", Icon: House },
-  { id: "pets", label: "Pets", Icon: PawPrint },
   { id: "notes", label: "Notes", Icon: NotebookPen },
+  { id: "pets", label: "Pets", Icon: PawPrint },
   { id: "me", label: "Me", Icon: UserRound },
 ];
 

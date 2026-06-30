@@ -199,7 +199,7 @@ export default function App() {
 
   // ── Render ────────────────────────────────────────────
   return (
-    <div className="min-h-dvh bg-[#f7f4ef]">
+    <div className="flex min-h-dvh flex-col bg-[#f7f4ef]">
       <header className="sticky top-0 z-30 border-b-2 border-[#ede8e0] bg-[#fdfaf6]/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-0">
           <button
@@ -286,20 +286,18 @@ export default function App() {
         </section>
       </main>
 
-      <footer className="hidden border-t-2 border-[#ede8e0] bg-[#fdfaf6] px-4 pt-6 pb-28 sm:block sm:px-8 sm:py-6">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 text-sm font-medium text-[#9e8e7e] sm:flex-row sm:items-center sm:justify-between">
+      <footer className="hidden border-t border-[#ede8e0] bg-[#fdfaf6] sm:block">
+        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-5 text-sm text-[#9e8e7e] sm:flex-row sm:items-center sm:justify-between sm:px-0">
           <div className="flex items-center gap-2">
             <img
               src={pawketIcon}
               alt="Pawket"
               className="h-5 w-5 object-contain"
             />
-            <span className="font-extrabold text-[#2d2520]">Pawket</span>
-            <span>Daily care, neatly kept.</span>
+            <span className="font-bold text-[#2d2520]">Pawket</span>
+            <span className="hidden sm:inline">Daily care, neatly kept.</span>
           </div>
-          <span>
-            {new Date().getFullYear()} Pawket. Made for thoughtful pawrents.
-          </span>
+          <span>{new Date().getFullYear()} Pawket</span>
         </div>
       </footer>
 
