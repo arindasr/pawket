@@ -137,7 +137,7 @@ export default function AuthPage({ onAuth }) {
     <div className="relative min-h-dvh bg-[#f7f4ef] overflow-hidden flex flex-col">
       {/* ── Background paw prints — evenly distributed ── */}
       <div
-        className="pointer-events-none absolute inset-0 hidden select-none overflow-visible md:block"
+        className="pointer-events-none select-none absolute inset-0 overflow-visible"
         aria-hidden="true"
       >
         {pawPositions.map((p, i) => (
@@ -158,7 +158,7 @@ export default function AuthPage({ onAuth }) {
 
       <div className="flex-1 flex items-center justify-center p-4 md:p-8 relative z-10">
         <div className="relative grid w-full max-w-6xl gap-8 rounded-4xl border-2 border-[#d9c8aa] bg-white/90 p-5 shadow-2xl backdrop-blur-sm md:grid-cols-[1fr_420px] md:p-8 lg:p-12">
-          <div className="relative flex flex-col justify-center text-center md:text-left">
+          <div className="relative hidden flex-col justify-center text-center md:flex md:text-left">
             <h1 className="text-4xl font-black leading-tight tracking-tight text-[#2d2520] sm:text-5xl lg:text-6xl">
               Hello, Pawrents!
             </h1>
