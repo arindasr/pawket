@@ -137,7 +137,7 @@ export default function AuthPage({ onAuth }) {
     <div className="relative min-h-dvh bg-[#f7f4ef] overflow-hidden flex flex-col">
       {/* ── Background paw prints — evenly distributed ── */}
       <div
-        className="pointer-events-none select-none absolute inset-0 overflow-visible"
+        className="pointer-events-none absolute inset-0 hidden select-none overflow-visible md:block"
         aria-hidden="true"
       >
         {pawPositions.map((p, i) => (
