@@ -37,13 +37,11 @@ function PetIllustration() {
   );
 }
 
-// ── Generate evenly distributed paw prints ──
+// ── Generate evenly distributed paw prints for desktop/tablet ──
 const generatePawPositions = () => {
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const positions = [];
-
-  const cols = isMobile ? 5 : 8;
-  const rows = isMobile ? 5 : 7;
+  const cols = 8;
+  const rows = 7;
   const total = cols * rows;
 
   for (let i = 0; i < total; i++) {
@@ -59,12 +57,8 @@ const generatePawPositions = () => {
     top = Math.max(3, Math.min(97, top));
     left = Math.max(3, Math.min(97, left));
 
-    const size = isMobile
-      ? 22 + Math.floor(Math.random() * 20)
-      : 30 + Math.floor(Math.random() * 28);
-
     positions.push({
-      size,
+      size: 30 + Math.floor(Math.random() * 28),
       top,
       left,
       rotate: `${(Math.random() - 0.5) * 60}deg`,
@@ -77,9 +71,8 @@ const generatePawPositions = () => {
 
 // ── Get or generate paw positions (permanent via localStorage) ──
 const getPawPositions = () => {
-  const STORAGE_KEY = "pawket_paw_positions";
+  const STORAGE_KEY = "pawket_paw_positions_desktop";
 
-  // Coba ambil dari localStorage
   if (typeof window !== "undefined") {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -91,10 +84,8 @@ const getPawPositions = () => {
     }
   }
 
-  // Generate baru
   const positions = generatePawPositions();
 
-  // Simpan ke localStorage
   if (typeof window !== "undefined") {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(positions));
@@ -106,7 +97,6 @@ const getPawPositions = () => {
   return positions;
 };
 
-// ✅ GENERATE SEKALI DAN SIMPAN PERMANEN
 const INITIAL_PAW_POSITIONS = getPawPositions();
 
 // ─────────────────────────────────────────────────────────
@@ -116,9 +106,7 @@ export default function AuthPage({ onAuth }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // ✅ PAKAI YANG SUDAH DISIMPAN (PERMANEN)
   const pawPositions = INITIAL_PAW_POSITIONS;
-
   const isRegister = mode === "register";
 
   function handleSubmit(e) {
@@ -134,10 +122,9 @@ export default function AuthPage({ onAuth }) {
   }
 
   return (
-    <div className="relative min-h-dvh bg-[#f7f4ef] overflow-hidden flex flex-col">
-      {/* ── Background paw prints — evenly distributed ── */}
+    <div className="relative min-h-dvh overflow-hidden bg-[#f6f1ea]">
       <div
-        className="pointer-events-none select-none absolute inset-0 overflow-visible"
+        className="pointer-events-none absolute inset-0 hidden overflow-visible md:block"
         aria-hidden="true"
       >
         {pawPositions.map((p, i) => (
@@ -156,22 +143,22 @@ export default function AuthPage({ onAuth }) {
         ))}
       </div>
 
-      <div className="flex-1 flex items-center justify-center p-4 md:p-8 relative z-10">
-        <div className="relative grid w-full max-w-6xl gap-8 rounded-4xl border-2 border-[#d9c8aa] bg-white/90 p-5 shadow-2xl backdrop-blur-sm md:grid-cols-[1fr_420px] md:p-8 lg:p-12">
+      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-6xl items-center justify-center px-4 py-6 sm:px-6 md:px-8 md:py-10">
+        <div className="grid w-full max-w-md gap-8 rounded-4xl border border-white/70 bg-white/78 p-3 shadow-[0_24px_70px_rgba(122,92,56,0.10)] backdrop-blur-xl md:max-w-6xl md:grid-cols-[1fr_420px] md:p-8 lg:gap-10 lg:p-12">
           <div className="relative hidden flex-col justify-center text-center md:flex md:text-left">
             <h1 className="text-4xl font-black leading-tight tracking-tight text-[#2d2520] sm:text-5xl lg:text-6xl">
               Hello, Pawrents!
             </h1>
 
-            <p className="mx-auto mt-4 max-w-xl text-lg font-semibold text-[#e07a5f] sm:text-xl md:mx-0">
+            <p className="mx-auto mt-4 max-w-xl text-lg font-semibold text-[#dd7b61] sm:text-xl md:mx-0">
               Welcome to Pawket.
             </p>
 
-            <p className="mx-auto mt-3 max-w-xl text-sm font-medium leading-relaxed text-[#8a7968] sm:text-base md:mx-0">
+            <p className="mx-auto mt-3 max-w-xl text-sm font-medium leading-relaxed text-[#8f7c6b] sm:text-base md:mx-0">
               Every journey starts with a single step... or paw print!
             </p>
 
-            <p className="mx-auto mt-1 max-w-xl text-sm font-medium leading-relaxed text-[#8a7968] sm:text-base md:mx-0">
+            <p className="mx-auto mt-1 max-w-xl text-sm font-medium leading-relaxed text-[#8f7c6b] sm:text-base md:mx-0">
               Your furry friends are waiting. Log in to continue your journey
               with them.
             </p>
@@ -181,59 +168,85 @@ export default function AuthPage({ onAuth }) {
             </div>
           </div>
 
-          <div className="relative rounded-3xl border-2 border-[#ede8e0] bg-[#fdfaf6] p-4 sm:p-6 flex flex-col">
-            <div className="mb-5 grid grid-cols-2 rounded-2xl bg-[#f0ebe3] p-1">
+          <div className="relative mx-auto flex w-full max-w-md flex-col rounded-4xl border border-white/85 bg-white/88 p-5 shadow-[0_16px_40px_rgba(122,92,56,0.08)] backdrop-blur-sm sm:p-6 md:p-7">
+            <div className="mb-5 md:hidden">
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-[#e07a5f]">
+                Pawket
+              </p>
+              <p className="mt-2 text-sm font-medium leading-relaxed text-[#8f7c6b] transition-all duration-300 ease-out">
+                {isRegister
+                  ? "Buat akun untuk mulai mengatur kebutuhan furry friends kamu."
+                  : "Login untuk lanjut ke dashboard dan pantau furry friends kamu."}
+              </p>
+            </div>
+
+            <div className="relative mb-6 grid grid-cols-2 rounded-2xl border border-[#efe4d7] bg-[#f7f1e8] p-1">
+              <span
+                className="absolute bottom-1 left-1 top-1 rounded-xl bg-white shadow-[0_6px_18px_rgba(122,92,56,0.10)] transition-all duration-300 ease-out"
+                style={{
+                  width: "calc(50% - 0.25rem)",
+                  transform: isRegister
+                    ? "translateX(calc(100% + 0.25rem))"
+                    : "translateX(0)",
+                }}
+              />
               <button
                 type="button"
                 onClick={() => setMode("login")}
-                className={`rounded-xl px-3 py-2 text-sm font-extrabold transition-colors ${!isRegister ? "bg-white text-[#7a5c38] shadow-sm" : "text-[#9e8e7e]"}`}
+                className={`relative z-10 rounded-xl px-3 py-2 text-sm font-extrabold transition-all duration-300 ease-out ${!isRegister ? "text-[#7a5c38]" : "text-[#9e8e7e] hover:text-[#7a5c38]"}`}
               >
                 Login
               </button>
               <button
                 type="button"
                 onClick={() => setMode("register")}
-                className={`rounded-xl px-3 py-2 text-sm font-extrabold transition-colors ${isRegister ? "bg-white text-[#7a5c38] shadow-sm" : "text-[#9e8e7e]"}`}
+                className={`relative z-10 rounded-xl px-3 py-2 text-sm font-extrabold transition-all duration-300 ease-out ${isRegister ? "text-[#7a5c38]" : "text-[#9e8e7e] hover:text-[#7a5c38]"}`}
               >
                 Register
               </button>
             </div>
 
-            <div className="mb-5">
-              <h2 className="text-2xl font-black tracking-tight text-[#2d2520]">
+            <div className="mb-5 text-center transition-all duration-300 ease-out md:text-left">
+              <h2 className="text-2xl font-black tracking-tight text-[#2d2520] sm:text-[1.75rem]">
                 {isRegister ? "Create account" : "Welcome back"}
               </h2>
-              <p className="mt-1 text-sm font-medium text-[#9e8e7e]">
+              <p className="mt-1 text-sm font-medium text-[#9e8e7e] transition-all duration-300 ease-out">
                 {isRegister
                   ? "Register to open your Pawket dashboard."
                   : "Login to continue to your dashboard."}
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
-              <div className="space-y-3 flex-1">
-                {isRegister && (
-                  <label className="block">
-                    <span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[#9e8e7e]">
-                      Name
-                    </span>
-                    <span className="flex items-center gap-2 rounded-2xl border-2 border-[#ddd5c8] bg-white px-3 py-3 focus-within:border-[#c4a882]">
-                      <UserRound size={17} className="text-[#b0a898]" />
-                      <input
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Your name"
-                        className="min-w-0 flex-1 bg-transparent text-sm font-semibold text-[#3d3530] outline-none placeholder:text-[#c4b9a8]"
-                      />
-                    </span>
-                  </label>
-                )}
+            <form onSubmit={handleSubmit} className="flex flex-1 flex-col">
+              <div className="flex-1 space-y-4">
+                <div
+                  className={`grid overflow-hidden transition-all duration-300 ease-out ${isRegister ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
+                  aria-hidden={!isRegister}
+                >
+                  <div className="min-h-0">
+                    <label className="block pb-0.5">
+                      <span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[#9e8e7e]">
+                        Name
+                      </span>
+                      <span className="flex items-center gap-2 rounded-2xl border border-[#e5d9cc] bg-[#fffdfa] px-3 py-3 transition-all duration-300 ease-out focus-within:border-[#d3b08c] focus-within:bg-white">
+                        <UserRound size={17} className="text-[#b0a898]" />
+                        <input
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          placeholder="Your name"
+                          disabled={!isRegister}
+                          className="min-w-0 flex-1 bg-transparent text-sm font-semibold text-[#3d3530] outline-none placeholder:text-[#c4b9a8] disabled:cursor-default"
+                        />
+                      </span>
+                    </label>
+                  </div>
+                </div>
 
                 <label className="block">
                   <span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[#9e8e7e]">
                     Email
                   </span>
-                  <span className="flex items-center gap-2 rounded-2xl border-2 border-[#ddd5c8] bg-white px-3 py-3 focus-within:border-[#c4a882]">
+                  <span className="flex items-center gap-2 rounded-2xl border border-[#e5d9cc] bg-[#fffdfa] px-3 py-3 transition-all duration-300 ease-out focus-within:border-[#d3b08c] focus-within:bg-white">
                     <Mail size={17} className="text-[#b0a898]" />
                     <input
                       type="email"
@@ -250,7 +263,7 @@ export default function AuthPage({ onAuth }) {
                   <span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[#9e8e7e]">
                     Password
                   </span>
-                  <span className="flex items-center gap-2 rounded-2xl border-2 border-[#ddd5c8] bg-white px-3 py-3 focus-within:border-[#c4a882]">
+                  <span className="flex items-center gap-2 rounded-2xl border border-[#e5d9cc] bg-[#fffdfa] px-3 py-3 transition-all duration-300 ease-out focus-within:border-[#d3b08c] focus-within:bg-white">
                     <Lock size={17} className="text-[#b0a898]" />
                     <input
                       type="password"
@@ -263,15 +276,11 @@ export default function AuthPage({ onAuth }) {
                     />
                   </span>
                 </label>
-
-                <div className="mt-6 md:hidden">
-                  <PetIllustration />
-                </div>
               </div>
 
               <button
                 type="submit"
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#e07a5f] px-5 py-3.5 text-sm font-black text-white shadow-md transition-all hover:bg-[#c96a50] active:scale-[0.98]"
+                className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#e07a5f] px-5 py-3.5 text-sm font-black text-white shadow-[0_12px_24px_rgba(224,122,95,0.28)] transition-all duration-300 ease-out hover:bg-[#d56f55] hover:shadow-[0_16px_28px_rgba(224,122,95,0.34)] active:scale-[0.985]"
               >
                 {isRegister ? (
                   <UserPlus size={18} strokeWidth={3} />
