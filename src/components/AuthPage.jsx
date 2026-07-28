@@ -143,8 +143,8 @@ export default function AuthPage({ onAuth }) {
         ))}
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-6xl items-center justify-center px-4 py-6 sm:px-6 md:px-8 md:py-10">
-        <div className="grid w-full max-w-md gap-8 rounded-4xl border border-white/70 bg-white/78 p-3 shadow-[0_24px_70px_rgba(122,92,56,0.10)] backdrop-blur-xl md:max-w-6xl md:grid-cols-[1fr_420px] md:p-8 lg:gap-10 lg:p-12">
+      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-6xl items-center justify-center px-5 py-8 sm:px-6 md:px-8 md:py-10">
+        <div className="grid w-full max-w-md gap-0 md:max-w-6xl md:grid-cols-[1fr_420px] md:gap-8 md:rounded-4xl md:border md:border-white/70 md:bg-white/78 md:p-8 md:shadow-[0_24px_70px_rgba(122,92,56,0.10)] md:backdrop-blur-xl lg:gap-10 lg:p-12">
           <div className="relative hidden flex-col justify-center text-center md:flex md:text-left">
             <h1 className="text-4xl font-black leading-tight tracking-tight text-[#2d2520] sm:text-5xl lg:text-6xl">
               Hello, Pawrents!
@@ -168,21 +168,19 @@ export default function AuthPage({ onAuth }) {
             </div>
           </div>
 
-          <div className="relative mx-auto flex w-full max-w-md flex-col rounded-4xl border border-white/85 bg-white/88 p-5 shadow-[0_16px_40px_rgba(122,92,56,0.08)] backdrop-blur-sm sm:p-6 md:p-7">
-            <div className="mb-5 md:hidden">
-              <p className="text-xs font-black uppercase tracking-[0.22em] text-[#e07a5f]">
-                Pawket
-              </p>
-              <p className="mt-2 text-sm font-medium leading-relaxed text-[#8f7c6b] transition-all duration-300 ease-out">
-                {isRegister
-                  ? "Buat akun untuk mulai mengatur kebutuhan furry friends kamu."
-                  : "Login untuk lanjut ke dashboard dan pantau furry friends kamu."}
-              </p>
+          <div className="relative mx-auto flex w-full max-w-md flex-col md:rounded-4xl md:border md:border-white/85 md:bg-white/88 md:p-7 md:shadow-[0_16px_40px_rgba(122,92,56,0.08)] md:backdrop-blur-sm">
+            <div className="mb-6 flex justify-center md:hidden">
+              <img
+                src={petImage}
+                alt="A cat and dog playing together"
+                className="h-28 w-auto drop-shadow-sm"
+                loading="lazy"
+              />
             </div>
 
-            <div className="relative mb-6 grid grid-cols-2 rounded-2xl border border-[#efe4d7] bg-[#f7f1e8] p-1">
+            <div className="relative mb-7 grid grid-cols-2 rounded-full border border-[#efe4d7] bg-white/70 p-1 shadow-[0_10px_26px_rgba(122,92,56,0.08)] md:mb-6 md:rounded-2xl md:bg-[#f7f1e8] md:shadow-none">
               <span
-                className="absolute bottom-1 left-1 top-1 rounded-xl bg-white shadow-[0_6px_18px_rgba(122,92,56,0.10)] transition-all duration-300 ease-out"
+                className="absolute bottom-1 left-1 top-1 rounded-full bg-white shadow-[0_6px_18px_rgba(122,92,56,0.10)] transition-all duration-300 ease-out md:rounded-xl"
                 style={{
                   width: "calc(50% - 0.25rem)",
                   transform: isRegister
@@ -193,24 +191,24 @@ export default function AuthPage({ onAuth }) {
               <button
                 type="button"
                 onClick={() => setMode("login")}
-                className={`relative z-10 rounded-xl px-3 py-2 text-sm font-extrabold transition-all duration-300 ease-out ${!isRegister ? "text-[#7a5c38]" : "text-[#9e8e7e] hover:text-[#7a5c38]"}`}
+                className={`relative z-10 rounded-full px-3 py-2.5 text-sm font-extrabold transition-all duration-300 ease-out md:rounded-xl md:py-2 ${!isRegister ? "text-[#7a5c38]" : "text-[#9e8e7e] hover:text-[#7a5c38]"}`}
               >
                 Login
               </button>
               <button
                 type="button"
                 onClick={() => setMode("register")}
-                className={`relative z-10 rounded-xl px-3 py-2 text-sm font-extrabold transition-all duration-300 ease-out ${isRegister ? "text-[#7a5c38]" : "text-[#9e8e7e] hover:text-[#7a5c38]"}`}
+                className={`relative z-10 rounded-full px-3 py-2.5 text-sm font-extrabold transition-all duration-300 ease-out md:rounded-xl md:py-2 ${isRegister ? "text-[#7a5c38]" : "text-[#9e8e7e] hover:text-[#7a5c38]"}`}
               >
                 Register
               </button>
             </div>
 
-            <div className="mb-5 text-center transition-all duration-300 ease-out md:text-left">
-              <h2 className="text-2xl font-black tracking-tight text-[#2d2520] sm:text-[1.75rem]">
+            <div className="mb-6 text-center transition-all duration-300 ease-out md:mb-5 md:text-left">
+              <h2 className="text-[1.7rem] font-black tracking-tight text-[#2d2520] sm:text-[1.75rem]">
                 {isRegister ? "Create account" : "Welcome back"}
               </h2>
-              <p className="mt-1 text-sm font-medium text-[#9e8e7e] transition-all duration-300 ease-out">
+              <p className="mx-auto mt-1.5 max-w-72 text-sm font-medium leading-relaxed text-[#9e8e7e] transition-all duration-300 ease-out md:mx-0 md:max-w-none md:leading-normal">
                 {isRegister
                   ? "Register to open your Pawket dashboard."
                   : "Login to continue to your dashboard."}
@@ -228,7 +226,7 @@ export default function AuthPage({ onAuth }) {
                       <span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[#9e8e7e]">
                         Name
                       </span>
-                      <span className="flex items-center gap-2 rounded-2xl border border-[#e5d9cc] bg-[#fffdfa] px-3 py-3 transition-all duration-300 ease-out focus-within:border-[#d3b08c] focus-within:bg-white">
+                      <span className="flex items-center gap-2 rounded-xl border border-[#e5d9cc] bg-white/82 px-3.5 py-3.5 shadow-[0_8px_20px_rgba(122,92,56,0.05)] transition-all duration-300 ease-out focus-within:border-[#d3b08c] focus-within:bg-white md:rounded-2xl md:bg-[#fffdfa] md:px-3 md:py-3 md:shadow-none">
                         <UserRound size={17} className="text-[#b0a898]" />
                         <input
                           value={name}
@@ -246,7 +244,7 @@ export default function AuthPage({ onAuth }) {
                   <span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[#9e8e7e]">
                     Email
                   </span>
-                  <span className="flex items-center gap-2 rounded-2xl border border-[#e5d9cc] bg-[#fffdfa] px-3 py-3 transition-all duration-300 ease-out focus-within:border-[#d3b08c] focus-within:bg-white">
+                  <span className="flex items-center gap-2 rounded-xl border border-[#e5d9cc] bg-white/82 px-3.5 py-3.5 shadow-[0_8px_20px_rgba(122,92,56,0.05)] transition-all duration-300 ease-out focus-within:border-[#d3b08c] focus-within:bg-white md:rounded-2xl md:bg-[#fffdfa] md:px-3 md:py-3 md:shadow-none">
                     <Mail size={17} className="text-[#b0a898]" />
                     <input
                       type="email"
@@ -263,7 +261,7 @@ export default function AuthPage({ onAuth }) {
                   <span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-[#9e8e7e]">
                     Password
                   </span>
-                  <span className="flex items-center gap-2 rounded-2xl border border-[#e5d9cc] bg-[#fffdfa] px-3 py-3 transition-all duration-300 ease-out focus-within:border-[#d3b08c] focus-within:bg-white">
+                  <span className="flex items-center gap-2 rounded-xl border border-[#e5d9cc] bg-white/82 px-3.5 py-3.5 shadow-[0_8px_20px_rgba(122,92,56,0.05)] transition-all duration-300 ease-out focus-within:border-[#d3b08c] focus-within:bg-white md:rounded-2xl md:bg-[#fffdfa] md:px-3 md:py-3 md:shadow-none">
                     <Lock size={17} className="text-[#b0a898]" />
                     <input
                       type="password"
@@ -280,7 +278,7 @@ export default function AuthPage({ onAuth }) {
 
               <button
                 type="submit"
-                className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#e07a5f] px-5 py-3.5 text-sm font-black text-white shadow-[0_12px_24px_rgba(224,122,95,0.28)] transition-all duration-300 ease-out hover:bg-[#d56f55] hover:shadow-[0_16px_28px_rgba(224,122,95,0.34)] active:scale-[0.985]"
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-[#e07a5f] px-5 py-3.5 text-sm font-black text-white shadow-[0_12px_24px_rgba(224,122,95,0.28)] transition-all duration-300 ease-out hover:bg-[#d56f55] hover:shadow-[0_16px_28px_rgba(224,122,95,0.34)] active:scale-[0.985] md:mt-5 md:rounded-2xl"
               >
                 {isRegister ? (
                   <UserPlus size={18} strokeWidth={3} />
