@@ -35,7 +35,7 @@ function PasswordInput({ value, onChange, placeholder }) {
       <input
         type={visible ? "text" : "password"}
         required
-        minLength={4}
+        minLength={6}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
@@ -126,24 +126,6 @@ function AuthForm({ isRegister, onSwitch }) {
         </p>
       </div>
 
-      {/* Google button */}
-      <button
-        type="button"
-        onClick={handleGoogle}
-        disabled={googleLoading || loading}
-        className="mb-4 flex w-full items-center justify-center gap-2.5 rounded-xl border border-[#e8e0d8] bg-white py-3 text-sm font-medium text-[#2d2520] shadow-sm transition hover:bg-[#faf8f5] active:scale-[0.98] disabled:opacity-60"
-      >
-        <GoogleIcon />
-        {googleLoading ? "Redirecting…" : "Continue with Google"}
-      </button>
-
-      {/* Divider */}
-      <div className="relative my-4 flex items-center gap-3">
-        <div className="h-px flex-1 bg-[#e8e0d8]" />
-        <span className="text-xs text-[#bbb0a4]">or</span>
-        <div className="h-px flex-1 bg-[#e8e0d8]" />
-      </div>
-
       {/* Email/password form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* Name — animated */}
@@ -181,7 +163,7 @@ function AuthForm({ isRegister, onSwitch }) {
           <PasswordInput
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="At least 4 characters"
+            placeholder="At least 6 characters"
           />
         </Field>
 
@@ -202,6 +184,24 @@ function AuthForm({ isRegister, onSwitch }) {
             : isRegister ? "Create account" : "Sign in"}
         </button>
       </form>
+
+      {/* Divider */}
+      <div className="relative my-4 flex items-center gap-3">
+        <div className="h-px flex-1 bg-[#e8e0d8]" />
+        <span className="text-xs text-[#bbb0a4]">or</span>
+        <div className="h-px flex-1 bg-[#e8e0d8]" />
+      </div>
+
+      {/* Google button */}
+      <button
+        type="button"
+        onClick={handleGoogle}
+        disabled={googleLoading || loading}
+        className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-[#e8e0d8] bg-white py-3 text-sm font-medium text-[#2d2520] shadow-sm transition hover:bg-[#faf8f5] active:scale-[0.98] disabled:opacity-60"
+      >
+        <GoogleIcon />
+        {googleLoading ? "Redirecting…" : "Continue with Google"}
+      </button>
 
       {/* Switch mode */}
       <p className="mt-5 text-center text-sm text-[#9e8e7e]">
