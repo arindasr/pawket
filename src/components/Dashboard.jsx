@@ -246,7 +246,9 @@ export default function Dashboard({
     0,
   );
   const todaysNotes = notes.filter((note) => {
-    const noteDate = new Date(note.createdAt);
+    // support both created_at (Supabase bigint) and createdAt (legacy)
+    const ts = note.created_at ?? note.createdAt;
+    const noteDate = new Date(typeof ts === "number" ? ts : Number(ts));
     const today = new Date();
     return (
       noteDate.getFullYear() === today.getFullYear() &&
@@ -260,8 +262,8 @@ export default function Dashboard({
     onAddNote({
       id: crypto.randomUUID(),
       text,
-      petName: "General",
-      createdAt: Date.now(),
+      pet_name: "General",
+      created_at: Date.now(),
     });
   }
 
@@ -448,7 +450,7 @@ export default function Dashboard({
                               {note.text}
                             </p>
                             <p className="mt-0.5 text-[10px] font-bold text-[#b0a898]">
-                              {note.petName || "General"}
+                              {note.pet_name || note.petName || "General"}
                             </p>
                           </div>
                           {onDeleteNote && (
