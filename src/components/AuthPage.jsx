@@ -1,96 +1,64 @@
 import { useState } from "react";
-import { LogIn, UserPlus, Mail, Lock, UserRound } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import petImage from "../assets/pet.png";
 
-// ── Decorative paw SVG ──
-function PawDecor({ size = 48, className = "" }) {
+// ── Password input with show/hide toggle ──
+function PasswordInput({ value, onChange, placeholder }) {
+  const [visible, setVisible] = useState(false);
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 64 64"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-hidden="true"
-    >
-      <ellipse cx="32" cy="42" rx="14" ry="12" fill="currentColor" />
-      <ellipse cx="18" cy="28" rx="6" ry="7" fill="currentColor" />
-      <ellipse cx="31" cy="23" rx="6" ry="7" fill="currentColor" />
-      <ellipse cx="44" cy="26" rx="6" ry="7" fill="currentColor" />
-      <ellipse cx="54" cy="35" rx="5" ry="6" fill="currentColor" />
-    </svg>
+    <div className="relative">
+      <input
+        type={visible ? "text" : "password"}
+        required
+        minLength={4}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className="w-full rounded-xl border border-[#e8e0d8] bg-[#faf8f5] px-4 py-3 pr-11 text-sm text-[#2d2520] outline-none transition placeholder:text-[#bbb0a4] focus:border-[#e07a5f] focus:bg-white focus:ring-2 focus:ring-[#e07a5f]/15"
+      />
+      <button
+        type="button"
+        onClick={() => setVisible((v) => !v)}
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#b0a090] transition hover:text-[#e07a5f]"
+        aria-label={visible ? "Hide password" : "Show password"}
+      >
+        {visible ? <EyeOff size={17} /> : <Eye size={17} />}
+      </button>
+    </div>
   );
 }
 
-// ── Generate paw positions ──
-const generatePawPositions = () => {
-  const positions = [];
-  const cols = 8;
-  const rows = 7;
-  for (let i = 0; i < cols * rows; i++) {
-    const col = i % cols;
-    const row = Math.floor(i / cols);
-    const offsetX = (Math.random() - 0.5) * 0.4;
-    const offsetY = (Math.random() - 0.5) * 0.4;
-    positions.push({
-      size: 32 + Math.floor(Math.random() * 32),
-      top: Math.max(3, Math.min(97, ((row + 0.5) / rows + offsetY / rows) * 100)),
-      left: Math.max(3, Math.min(97, ((col + 0.5) / cols + offsetX / cols) * 100)),
-      rotate: `${(Math.random() - 0.5) * 60}deg`,
-      opacity: 0.15 + Math.random() * 0.2,
-    });
-  }
-  return positions;
-};
-
-const getPawPositions = () => {
-  const KEY = "pawket_paw_positions_desktop";
-  if (typeof window !== "undefined") {
-    try {
-      const saved = localStorage.getItem(KEY);
-      if (saved) return JSON.parse(saved);
-    } catch { /* ignore */ }
-  }
-  const positions = generatePawPositions();
-  try { localStorage.setItem(KEY, JSON.stringify(positions)); } catch { /* ignore */ }
-  return positions;
-};
-
-const INITIAL_PAW_POSITIONS = getPawPositions();
-
-// ── Reusable input field ──
-function InputField({ icon: Icon, children }) {
+// ── Field wrapper ──
+function Field({ label, children }) {
   return (
-    <span className="flex items-center gap-3 rounded-2xl border border-[#e5d9cc] bg-white px-4 py-4 transition-all duration-200 focus-within:border-[#d3b08c] focus-within:ring-2 focus-within:ring-[#d3b08c]/20">
-      <Icon size={20} className="shrink-0 text-[#b8a898]" />
+    <div className="flex flex-col gap-1.5">
+      <label className="text-xs font-semibold uppercase tracking-wider text-[#a89880]">
+        {label}
+      </label>
       {children}
-    </span>
+    </div>
   );
 }
 
-// ── Reusable form JSX (used in both desktop & mobile) ──
+// ── Auth form (shared) ──
 function AuthForm({ isRegister, name, setName, email, setEmail, password, setPassword, onSubmit, onSwitch }) {
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full">
       {/* Heading */}
-      <div className="mb-8">
-        <p className="mb-1 text-sm font-bold uppercase tracking-widest text-[#e07a5f]">
-          {isRegister ? "New here?" : "Back again?"}
-        </p>
-        <h2 className="text-4xl font-black tracking-tight text-[#2d2520]">
-          {isRegister ? "Create account" : "Welcome back"}
-        </h2>
-        <p className="mt-2.5 text-base font-medium text-[#9e8e7e]">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-[#1e1a17] tracking-tight">
+          {isRegister ? "Create your account" : "Welcome back"}
+        </h1>
+        <p className="mt-1 text-sm text-[#9e8e7e]">
           {isRegister
-            ? "Register to open your Pawket dashboard."
-            : "Login to continue to your dashboard."}
+            ? "Start managing your pets today."
+            : "Sign in to continue to Pawket."}
         </p>
       </div>
 
       {/* Form */}
-      <form onSubmit={onSubmit} className="flex flex-col gap-5">
-        {/* Name — animated show/hide */}
+      <form onSubmit={onSubmit} className="flex flex-col gap-4">
+        {/* Name — animated */}
         <div
           className={`grid overflow-hidden transition-all duration-300 ease-out ${
             isRegister ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
@@ -98,78 +66,56 @@ function AuthForm({ isRegister, name, setName, email, setEmail, password, setPas
           aria-hidden={!isRegister}
         >
           <div className="min-h-0">
-            <label className="block pb-0.5">
-              <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#a89880]">
-                Name
-              </span>
-              <InputField icon={UserRound}>
-                <input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Your name"
-                  disabled={!isRegister}
-                  className="min-w-0 flex-1 bg-transparent text-base font-medium text-[#3d3530] outline-none placeholder:text-[#c4b9a8] disabled:cursor-default"
-                />
-              </InputField>
-            </label>
+            <Field label="Name">
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your name"
+                disabled={!isRegister}
+                className="w-full rounded-xl border border-[#e8e0d8] bg-[#faf8f5] px-4 py-3 text-sm text-[#2d2520] outline-none transition placeholder:text-[#bbb0a4] focus:border-[#e07a5f] focus:bg-white focus:ring-2 focus:ring-[#e07a5f]/15 disabled:cursor-default"
+              />
+            </Field>
           </div>
         </div>
 
-        <label className="block">
-          <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#a89880]">
-            Email
-          </span>
-          <InputField icon={Mail}>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className="min-w-0 flex-1 bg-transparent text-base font-medium text-[#3d3530] outline-none placeholder:text-[#c4b9a8]"
-            />
-          </InputField>
-        </label>
+        <Field label="Email">
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            className="w-full rounded-xl border border-[#e8e0d8] bg-[#faf8f5] px-4 py-3 text-sm text-[#2d2520] outline-none transition placeholder:text-[#bbb0a4] focus:border-[#e07a5f] focus:bg-white focus:ring-2 focus:ring-[#e07a5f]/15"
+          />
+        </Field>
 
-        <label className="block">
-          <span className="mb-2 block text-xs font-bold uppercase tracking-widest text-[#a89880]">
-            Password
-          </span>
-          <InputField icon={Lock}>
-            <input
-              type="password"
-              required
-              minLength={4}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="At least 4 characters"
-              className="min-w-0 flex-1 bg-transparent text-base font-medium text-[#3d3530] outline-none placeholder:text-[#c4b9a8]"
-            />
-          </InputField>
-        </label>
+        <Field label="Password">
+          <PasswordInput
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="At least 4 characters"
+          />
+        </Field>
 
         <button
           type="submit"
-          className="mt-1 flex w-full items-center justify-center gap-2.5 rounded-2xl bg-[#e07a5f] py-4 text-base font-black text-white shadow-[0_8px_24px_rgba(224,122,95,0.32)] transition-all duration-200 hover:bg-[#d56f55] hover:shadow-[0_12px_28px_rgba(224,122,95,0.38)] active:scale-[0.98]"
+          className="mt-1 w-full rounded-xl bg-[#e07a5f] py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#d46e55] active:scale-[0.98]"
         >
-          {isRegister ? <UserPlus size={20} strokeWidth={2.5} /> : <LogIn size={20} strokeWidth={2.5} />}
-          {isRegister ? "Register and Enter" : "Login and Enter"}
+          {isRegister ? "Create account" : "Sign in"}
         </button>
       </form>
 
-      {/* Mobile switch link */}
-      {onSwitch && (
-        <p className="mt-7 text-center text-sm font-medium text-[#9e8e7e]">
-          {isRegister ? "Already have an account? " : "Don't have an account? "}
-          <button
-            type="button"
-            onClick={onSwitch}
-            className="font-bold text-[#e07a5f] hover:underline"
-          >
-            {isRegister ? "Login" : "Register"}
-          </button>
-        </p>
-      )}
+      {/* Switch mode */}
+      <p className="mt-5 text-center text-sm text-[#9e8e7e]">
+        {isRegister ? "Already have an account? " : "Don't have an account? "}
+        <button
+          type="button"
+          onClick={onSwitch}
+          className="font-semibold text-[#e07a5f] hover:underline"
+        >
+          {isRegister ? "Sign in" : "Sign up"}
+        </button>
+      </p>
     </div>
   );
 }
@@ -199,119 +145,79 @@ export default function AuthPage({ onAuth }) {
     setMode(isRegister ? "login" : "register");
   }
 
-  // login    → hero left (0%),  form right (50%)
-  // register → form left (0%),  hero right (50%)
-  const heroLeft = isRegister ? "50%" : "0%";
-  const formLeft = isRegister ? "0%"  : "50%";
-
   return (
-    <div className="relative min-h-dvh overflow-hidden bg-[#f5f0e8]">
+    <div className="min-h-dvh flex">
 
-      {/* Paw background — only visible behind hero panel */}
-      <div className="pointer-events-none absolute inset-0 hidden md:block" aria-hidden="true">
-        {INITIAL_PAW_POSITIONS.map((p, i) => (
-          <div
-            key={i}
-            className="absolute text-[#c8b89a]"
-            style={{
-              top: `${p.top}%`,
-              left: `${p.left}%`,
-              transform: `translate(-50%, -50%) rotate(${p.rotate})`,
-              opacity: p.opacity,
-            }}
-          >
-            <PawDecor size={p.size} />
+      {/* ── Left panel: illustration (desktop only) ── */}
+      <div className="hidden lg:flex lg:w-1/2 xl:w-[55%] relative overflow-hidden bg-[#fdf0e8]">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_60%_40%,_#f5c9aa_0%,_transparent_65%)] opacity-60" />
+        <div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-12 xl:px-20 text-center">
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-[#e07a5f]">Pawket</p>
+          <h2 className="text-4xl xl:text-5xl font-bold leading-tight text-[#1e1a17] tracking-tight">
+            Your pet care<br />companion
+          </h2>
+          <p className="mt-4 max-w-sm text-base text-[#9e8e7e] leading-relaxed">
+            Track health records, notes, and milestones for all your furry friends — all in one place.
+          </p>
+          <div className="mt-10 w-full max-w-sm">
+            <img src={petImage} alt="Happy pets" className="w-full drop-shadow-md" loading="lazy" />
           </div>
-        ))}
+        </div>
       </div>
 
-      {/* ── Desktop: sliding panels ── */}
-      <div className="relative hidden min-h-dvh w-full md:block">
+      {/* ── Right panel: form (desktop) ── */}
+      <div className="hidden lg:flex flex-1 flex-col items-center justify-center bg-white px-10 xl:px-16">
+        <div className="w-full max-w-sm">
+          <AuthForm
+            isRegister={isRegister}
+            name={name} setName={setName}
+            email={email} setEmail={setEmail}
+            password={password} setPassword={setPassword}
+            onSubmit={handleSubmit}
+            onSwitch={switchMode}
+          />
+        </div>
+      </div>
 
-        {/* Hero panel */}
-        <div
-          className="absolute top-0 h-full w-1/2 transition-[left] duration-700 ease-in-out"
-          style={{ left: heroLeft }}
-        >
-          <div className="flex h-full flex-col items-center justify-center px-12 py-16 lg:px-20">
-            <div className="flex w-full max-w-md flex-col items-center text-center">
-              <h1 className="text-5xl font-black leading-tight tracking-tight text-[#2d2520] lg:text-6xl">
-                {isRegister ? (
-                  <>Already have<br />an account?</>
-                ) : (
-                  <>Hello,<br />Pawrents!</>
-                )}
-              </h1>
+      {/* ── Mobile layout ── */}
+      <div className="flex lg:hidden flex-col w-full min-h-dvh">
 
-              <p className="mt-5 text-xl font-bold text-[#dd7b61]">
-                {isRegister ? "Welcome back." : "Welcome to Pawket."}
-              </p>
+        {/* Top hero area */}
+        <div className="relative overflow-hidden bg-[#fdf0e8] flex flex-col items-center justify-end px-6 pt-14 pb-10">
+          {/* Glow */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,_#f5c9aa_0%,_transparent_70%)] opacity-70" />
 
-              <p className="mt-3 text-base font-medium leading-relaxed text-[#8f7c6b] lg:text-lg">
-                {isRegister
-                  ? "Log back in and continue your journey with your furry friends."
-                  : "Every journey starts with a single step — or paw print. Your furry friends are waiting."}
-              </p>
-
-              <button
-                type="button"
-                onClick={switchMode}
-                className="mt-8 rounded-2xl border-2 border-[#e07a5f] px-10 py-3.5 text-base font-black text-[#e07a5f] transition-all duration-200 hover:bg-[#e07a5f] hover:text-white active:scale-[0.98]"
-              >
-                {isRegister ? "Login" : "Register"}
-              </button>
-
-              <div className="mt-10 w-full">
-                <img
-                  src={petImage}
-                  alt="A cat and dog playing together"
-                  className="w-full drop-shadow-sm"
-                  loading="lazy"
-                />
-              </div>
-            </div>
+          <div className="relative z-10 flex flex-col items-center text-center">
+            <img
+              src={petImage}
+              alt="Happy pets"
+              className="h-44 w-auto drop-shadow-md"
+              loading="lazy"
+            />
+            <h2 className="mt-5 text-2xl font-bold text-[#1e1a17] tracking-tight leading-snug">
+              Your pet care companion
+            </h2>
+            <p className="mt-1.5 text-sm text-[#9e8e7e] max-w-xs">
+              Track health records, notes, and milestones for all your furry friends.
+            </p>
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="absolute top-0 h-full w-px bg-[#e0d5c8]" style={{ left: "50%" }} />
-
-        {/* Form panel */}
-        <div
-          className="absolute top-0 h-full w-1/2 bg-white/85 backdrop-blur-md transition-[left] duration-700 ease-in-out"
-          style={{ left: formLeft }}
-        >
-          <div className="flex h-full flex-col items-center justify-center px-12 py-16 lg:px-20">
+        {/* Bottom form area */}
+        <div className="flex flex-1 flex-col justify-center bg-white px-6 py-8 sm:px-10">
+          <div className="w-full max-w-sm mx-auto">
             <AuthForm
               isRegister={isRegister}
               name={name} setName={setName}
               email={email} setEmail={setEmail}
               password={password} setPassword={setPassword}
               onSubmit={handleSubmit}
+              onSwitch={switchMode}
             />
           </div>
         </div>
       </div>
 
-      {/* ── Mobile: stacked layout ── */}
-      <div className="flex min-h-dvh flex-col items-center justify-center px-5 py-12 md:hidden">
-        <div className="mb-8">
-          <img
-            src={petImage}
-            alt="A cat and dog playing together"
-            className="h-36 w-auto drop-shadow-sm"
-            loading="lazy"
-          />
-        </div>
-        <AuthForm
-          isRegister={isRegister}
-          name={name} setName={setName}
-          email={email} setEmail={setEmail}
-          password={password} setPassword={setPassword}
-          onSubmit={handleSubmit}
-          onSwitch={switchMode}
-        />
-      </div>
     </div>
   );
 }
