@@ -13,6 +13,7 @@ import Dashboard from "./components/Dashboard";
 import ProfilePage from "./components/ProfilePage";
 import AddPetModal from "./components/AddPetModal";
 import HistoryModal from "./components/HistoryModal";
+import { supabase } from "./lib/supabase";
 
 // ── localStorage helpers ──────────────────────────────────
 function lsGet(key, fallback) {
@@ -64,7 +65,8 @@ const AUTH_KEY = "pawket_user";
 
 // ─────────────────────────────────────────────────────────
 export default function App() {
-  const [user, setUser] = useState(() => lsGet(AUTH_KEY, null));
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [petProfiles, setPetProfiles] = useState(() => lsGet(PETS_KEY, []));
   const [notes, setNotes] = useState(() => lsGet(NOTES_KEY, []));
   const [currentDateKey, setCurrentDateKey] = useState(() => todayKey());
@@ -76,8 +78,42 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState("dashboard");
 
   useEffect(() => {
-    user ? lsSet(AUTH_KEY, user) : localStorage.removeItem(AUTH_KEY);
-  }, [user]);
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUser({
+          name:
+            session.user.user_metadata?.full_name ||
+            session.user.user_metadata?.name ||
+            session.user.email?.split("@")[0] ||
+            "Pawrents",
+          email: session.user.email,
+          id: session.user.id,
+        });
+      }
+      setAuthLoading(false);
+    });
+
+    // Listen for auth changes (login, logout, OAuth redirect)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser({
+          name:
+            session.user.user_metadata?.full_name ||
+            session.user.user_metadata?.name ||
+            session.user.email?.split("@")[0] ||
+            "Pawrents",
+          email: session.user.email,
+          id: session.user.id,
+        });
+      } else {
+        setUser(null);
+      }
+      setAuthLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
   useEffect(() => {
     lsSet(PETS_KEY, petProfiles);
   }, [petProfiles]);
@@ -180,7 +216,7 @@ export default function App() {
   );
 
   // ── Loading splash ────────────────────────────────────
-  if (dailyData === null) {
+  if (authLoading || dailyData === null) {
     return (
       <div className="min-h-dvh bg-[#f7f4ef] flex items-center justify-center">
         <p className="text-[#9e8e7e] font-semibold text-sm">Loading Pawket…</p>
@@ -189,12 +225,12 @@ export default function App() {
   }
 
   if (!user) {
-    return <AuthPage onAuth={setUser} />;
+    return <AuthPage />;
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setCurrentPage("dashboard");
-    setUser(null);
+    await supabase.auth.signOut();
   };
 
   // ── Render ────────────────────────────────────────────

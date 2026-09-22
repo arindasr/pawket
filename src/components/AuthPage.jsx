@@ -1,6 +1,31 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { supabase } from "../lib/supabase";
 import petImage from "../assets/pet.png";
+
+// ── Google icon SVG ──
+function GoogleIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+      <path
+        fill="#4285F4"
+        d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
+      />
+      <path
+        fill="#34A853"
+        d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"
+      />
+      <path
+        fill="#EA4335"
+        d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"
+      />
+    </svg>
+  );
+}
 
 // ── Password input with show/hide toggle ──
 function PasswordInput({ value, onChange, placeholder }) {
@@ -40,8 +65,53 @@ function Field({ label, children }) {
   );
 }
 
-// ── Auth form (shared) ──
-function AuthForm({ isRegister, name, setName, email, setEmail, password, setPassword, onSubmit, onSwitch }) {
+// ── Auth form ──
+function AuthForm({ isRegister, onSwitch }) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    if (isRegister) {
+      const { error: signUpError } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          data: { full_name: name.trim() || "Pawrents" },
+        },
+      });
+      if (signUpError) setError(signUpError.message);
+    } else {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (signInError) setError(signInError.message);
+    }
+
+    setLoading(false);
+  }
+
+  async function handleGoogle() {
+    setError("");
+    setGoogleLoading(true);
+    const { error: googleError } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: window.location.origin },
+    });
+    if (googleError) {
+      setError(googleError.message);
+      setGoogleLoading(false);
+    }
+  }
+
   return (
     <div className="w-full">
       {/* Heading */}
@@ -56,8 +126,26 @@ function AuthForm({ isRegister, name, setName, email, setEmail, password, setPas
         </p>
       </div>
 
-      {/* Form */}
-      <form onSubmit={onSubmit} className="flex flex-col gap-4">
+      {/* Google button */}
+      <button
+        type="button"
+        onClick={handleGoogle}
+        disabled={googleLoading || loading}
+        className="mb-4 flex w-full items-center justify-center gap-2.5 rounded-xl border border-[#e8e0d8] bg-white py-3 text-sm font-medium text-[#2d2520] shadow-sm transition hover:bg-[#faf8f5] active:scale-[0.98] disabled:opacity-60"
+      >
+        <GoogleIcon />
+        {googleLoading ? "Redirecting…" : "Continue with Google"}
+      </button>
+
+      {/* Divider */}
+      <div className="relative my-4 flex items-center gap-3">
+        <div className="h-px flex-1 bg-[#e8e0d8]" />
+        <span className="text-xs text-[#bbb0a4]">or</span>
+        <div className="h-px flex-1 bg-[#e8e0d8]" />
+      </div>
+
+      {/* Email/password form */}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* Name — animated */}
         <div
           className={`grid overflow-hidden transition-all duration-300 ease-out ${
@@ -97,11 +185,21 @@ function AuthForm({ isRegister, name, setName, email, setEmail, password, setPas
           />
         </Field>
 
+        {/* Error message */}
+        {error && (
+          <p className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-600">
+            {error}
+          </p>
+        )}
+
         <button
           type="submit"
-          className="mt-1 w-full rounded-xl bg-[#e07a5f] py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#d46e55] active:scale-[0.98]"
+          disabled={loading || googleLoading}
+          className="mt-1 w-full rounded-xl bg-[#e07a5f] py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#d46e55] active:scale-[0.98] disabled:opacity-60"
         >
-          {isRegister ? "Create account" : "Sign in"}
+          {loading
+            ? isRegister ? "Creating account…" : "Signing in…"
+            : isRegister ? "Create account" : "Sign in"}
         </button>
       </form>
 
@@ -121,25 +219,9 @@ function AuthForm({ isRegister, name, setName, email, setEmail, password, setPas
 }
 
 // ─────────────────────────────────────────────────────────
-export default function AuthPage({ onAuth }) {
+export default function AuthPage() {
   const [mode, setMode] = useState("login");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   const isRegister = mode === "register";
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    const cleanEmail = email.trim();
-    if (!cleanEmail || !password.trim()) return;
-    onAuth({
-      name: isRegister
-        ? name.trim() || "Pawrents"
-        : cleanEmail.split("@")[0] || "Pawrents",
-      email: cleanEmail,
-    });
-  }
 
   function switchMode() {
     setMode(isRegister ? "login" : "register");
@@ -168,14 +250,7 @@ export default function AuthPage({ onAuth }) {
       {/* ── Right panel: form (desktop) ── */}
       <div className="hidden lg:flex flex-1 flex-col items-center justify-center bg-white px-10 xl:px-16">
         <div className="w-full max-w-sm">
-          <AuthForm
-            isRegister={isRegister}
-            name={name} setName={setName}
-            email={email} setEmail={setEmail}
-            password={password} setPassword={setPassword}
-            onSubmit={handleSubmit}
-            onSwitch={switchMode}
-          />
+          <AuthForm isRegister={isRegister} onSwitch={switchMode} />
         </div>
       </div>
 
@@ -184,9 +259,7 @@ export default function AuthPage({ onAuth }) {
 
         {/* Top hero area */}
         <div className="relative overflow-hidden bg-[#fdf0e8] flex flex-col items-center justify-end px-6 pt-14 pb-10">
-          {/* Glow */}
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,_#f5c9aa_0%,_transparent_70%)] opacity-70" />
-
           <div className="relative z-10 flex flex-col items-center text-center">
             <img
               src={petImage}
@@ -206,14 +279,7 @@ export default function AuthPage({ onAuth }) {
         {/* Bottom form area */}
         <div className="flex flex-1 flex-col justify-center bg-white px-6 py-8 sm:px-10">
           <div className="w-full max-w-sm mx-auto">
-            <AuthForm
-              isRegister={isRegister}
-              name={name} setName={setName}
-              email={email} setEmail={setEmail}
-              password={password} setPassword={setPassword}
-              onSubmit={handleSubmit}
-              onSwitch={switchMode}
-            />
+            <AuthForm isRegister={isRegister} onSwitch={switchMode} />
           </div>
         </div>
       </div>
